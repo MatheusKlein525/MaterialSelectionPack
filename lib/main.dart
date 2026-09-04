@@ -31,19 +31,25 @@ class AgendamentoEventoTela extends StatefulWidget {
 enum Visibilidade { public, private, vip }
 
 class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
- 
   static final DateTime _dataPadrao = DateTime.now();
   static const TimeOfDay _horarioPadrao = TimeOfDay(hour: 19, minute: 0);
   static const String _tipoPadrao = 'Aniversário';
   static const double _convidadosPadrao = 50.0;
   static const Visibilidade _visibilidadePadrao = Visibilidade.private;
 
-  
+  static const Map<String, bool> _servicosPadrao = {
+    'Buffet': false,
+    'Fotógrafo': false,
+    'Decoração': false,
+    'DJ': false,
+  };
+
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
   late String _tipoEventoSelecionado;
   late double _quantidadeConvidados;
   late Visibilidade _visibilidadeSelecionada;
+  late Map<String, bool> _servicosSelecionados;
 
   @override
   void initState() {
@@ -58,7 +64,24 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _tipoEventoSelecionado = _tipoPadrao;
       _quantidadeConvidados = _convidadosPadrao;
       _visibilidadeSelecionada = _visibilidadePadrao;
+      _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
     });
+    print('[DEBUG] Formulario resetado para os valores padrão');
+  }
+
+  void _salvarFormulario() {
+    print('===================================');
+    print('       RESUMO DO AGENDAMENTO       ');
+    print('===================================');
+    print(
+      'Data: ${_dataSelecionada.day}/${_dataSelecionada.month}/${_dataSelecionada.year}',
+    );
+    print('Horário: ${_horarioSelecionado.format(context)}');
+    print('Tipo de Evento: $_tipoEventoSelecionado');
+    print('Estimativa de convidados: ${_quantidadeConvidados.round()}');
+    print('Visibilidade: $_visibilidadeSelecionada');
+    print('Serviços Adicionais: $_servicosSelecionados');
+    print('=========================');
   }
 
   Future<void> _selecionarData(BuildContext context) async {
@@ -107,7 +130,6 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           
             Text(
               'Data e Horário',
               style: Theme.of(context).textTheme.titleMedium,
@@ -136,7 +158,6 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
             ),
             const Divider(height: 32),
 
-            
             Text(
               'Tipo de Evento',
               style: Theme.of(context).textTheme.titleMedium,
@@ -170,7 +191,6 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
             ),
             const Divider(height: 32),
 
-            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -199,7 +219,6 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
             ),
             const Divider(height: 32),
 
-          
             Text(
               'Visibilidade do Evento',
               style: Theme.of(context).textTheme.titleMedium,
@@ -237,6 +256,30 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                 ],
               ),
             ),
+            const Divider(height: 32),
+
+            Text(
+              'Serviços Adicionais',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Column(
+              children: _servicosSelecionados.keys.map((servico) {
+                return CheckboxListTile(
+                  dense: true,
+                  title: Text(servico),
+                  value: _servicosSelecionados[servico],
+                  onChanged: (bool? marcado) {
+                    setState(() {
+                      _servicosSelecionados[servico] = marcado ?? false;
+                    });
+                    print(
+                      '[DEBUG - Checkbox] Serviço "$servico" alterado para: $marcado',
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+            const Divider(height: 32),
           ],
         ),
       ),
