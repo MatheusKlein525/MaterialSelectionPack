@@ -4,7 +4,7 @@ void main() {
   runApp(const MeuApp());
 }
 
-// Classe MeuApp - Ponto de inicio de preparação dos Widgets
+
 class MeuApp extends StatelessWidget {
   const MeuApp({super.key});
 
@@ -32,7 +32,7 @@ class AgendamentoEventoTela extends StatefulWidget {
 }
 
 class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
-  // 1. Valores Padrão (para reset)
+
   static final DateTime _dataPadrao = DateTime.now();
   static const TimeOfDay _horarioPadrao = TimeOfDay(hour: 19, minute: 0);
   static const String _tipoPadrao = 'Aniversário';
@@ -51,8 +51,9 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     'Vegano',
   ];
   static const List<String> _tagsPadrao = [];
+  static const bool _lembretePadrao = true;
 
-  // 2. Variáveis de Estado
+ 
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
   late String _tipoEventoSelecionado;
@@ -60,6 +61,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
   late Visibilidade _visibilidadeSelecionada;
   late Map<String, bool> _servicosSelecionados;
   late List<String> _tagsSelecionadas;
+  late bool _enviarLembrete;
 
   @override
   void initState() {
@@ -76,6 +78,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
       _visibilidadeSelecionada = _visibilidadePadrao;
       _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
       _tagsSelecionadas = List<String>.from(_tagsPadrao);
+      _enviarLembrete = _lembretePadrao;
     });
     print('[DEBUG] Formulario resetado para os valores padrao.');
   }
@@ -91,6 +94,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     print('Visibilidade: $_visibilidadeSelecionada');
     print('Serviços Adicionais: $_servicosSelecionados');
     print('Restrições Alimentares (Tags): $_tagsSelecionadas');
+    print('Enviar Lembrete Automático: $_enviarLembrete');
     print('----------------------------------------');
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -100,7 +104,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
     );
   }
 
-  // Funções Auxiliares para Pickers
+
   Future<void> _selecionarData(BuildContext context) async {
     final DateTime? data = await showDatePicker(
       context: context,
@@ -141,7 +145,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. DatePicker & 2. TimePicker
+           
             Text(
               'Data e Horário',
               style: Theme.of(context).textTheme.titleMedium,
@@ -170,7 +174,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
             ),
             const Divider(height: 32),
 
-            // 3. Menu (DropdownButton)
+            
             Text(
               'Tipo de Evento',
               style: Theme.of(context).textTheme.titleMedium,
@@ -201,7 +205,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
             ),
             const Divider(height: 32),
 
-            // 4. Slider
+          
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -230,7 +234,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
             ),
             const Divider(height: 32),
 
-            // 5. Radio
+            
             Text(
               'Visibilidade do Evento',
               style: Theme.of(context).textTheme.titleMedium,
@@ -262,7 +266,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
             ),
             const Divider(height: 32),
 
-            // 6. Checkbox
+        
             Text(
               'Serviços Adicionais',
               style: Theme.of(context).textTheme.titleMedium,
@@ -284,7 +288,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
             ),
             const Divider(height: 32),
 
-            // 7. Chip (FilterChip)
+           
             Text(
               'Restrições Alimentares (Tags)',
               style: Theme.of(context).textTheme.titleMedium,
@@ -311,6 +315,19 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
                   },
                 );
               }).toList(),
+            ),
+            const Divider(height: 32),
+
+            SwitchListTile(
+              title: const Text('Enviar Lembrete Automático'),
+              subtitle: const Text('Notificar convidados 24h antes do evento'),
+              value: _enviarLembrete,
+              onChanged: (bool valor) {
+                setState(() {
+                  _enviarLembrete = valor;
+                });
+                print('[DEBUG Switch] Enviar lembrete: $valor');
+              },
             ),
             const Divider(height: 32),
           ],
